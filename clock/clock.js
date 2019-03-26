@@ -1,19 +1,20 @@
 /*
 * @Author: huangqinghai
 * @Date:   2019-03-25 22:38:42
-* @Last Modified by:   huangqinghai
-* @Last Modified time: 2019-03-26 11:28:32
+* @Last Modified by:   huangqh
+* @Last Modified time: 2019-03-26 15:31:09
 */
-var dom = document.getElementById('colck');
-var ctx = dom.getContext('2d');
-var width = ctx.canvas.width;
-var height = ctx.canvas.height;
-var r = width / 2;
-var rm = width / 200;
-var timer;
+(function(){
+	var dom = document.getElementById('colck');
+	var ctx = dom.getContext('2d');
+	var width = ctx.canvas.width;
+	var height = ctx.canvas.height;
+	var r = width / 2;
+	var rm = width / 200;
+	var timer;
 
-function drawBackground() {
-	ctx.save();
+	function drawBackground() {
+		ctx.save();
 	ctx.translate(r, r); // 将canvas的中心转移到圆的中点
 	ctx.beginPath(); // 开始绘制
 	ctx.lineWidth = 10 * rm;
@@ -101,10 +102,10 @@ function start() {
 	let s = now.getSeconds();
 	drawBackground();
 	drawHour(h, m);
-    drawMinute(m);
-    drawSecond(s);
-    drawCicle();
-    ctx.restore();
+	drawMinute(m);
+	drawSecond(s);
+	drawCicle();
+	ctx.restore();
 }
 timer = setInterval(start, 1000);
 document.getElementById('stop').addEventListener('click', function() {
@@ -118,5 +119,6 @@ document.getElementById('start').addEventListener('click', function() {
 	}
 	timer = setInterval(start, 1000);
 })
+})();
 
 
