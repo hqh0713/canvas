@@ -2,14 +2,14 @@
 * @Author: huangqh
 * @Date:   2019-03-26 22:34:11
 * @Last Modified by:   huangqh
-* @Last Modified time: 2019-03-27 23:06:40
+* @Last Modified time: 2019-03-27 23:23:01
 */
 (function() {
 	var canvas = document.getElementById('canvas');
 	canvas.width = 800;
 	canvas.height = 668;
 	var context = canvas.getContext('2d');
-	var ball = {x:500, y:100, r:20, g:6, vx:-4, vy:0, color: '#005588'} // 小球
+	var ball = {x:500, y:140, r:20, g:5, vx:-4, vy:0, color: '#005588'} // 小球
 	var f = 0.5; // 摩擦系数
 	setInterval(function() {
 		render(context);
