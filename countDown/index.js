@@ -2,10 +2,9 @@
 * @Author: huangqh
 * @Date:   2019-03-26 22:34:11
 * @Last Modified by:   huangqh
-* @Last Modified time: 2019-03-28 23:29:34
+* @Last Modified time: 2019-03-31 22:05:14
 */
 (function() {
-	console.log(number);
 	var WINDOW_WIDTH = 1024; // 屏幕宽
 	var WINDOW_HEIGHT = 768; // 屏幕高
 	var RADIUS = 8; // 小球半价
@@ -26,12 +25,9 @@
 
 	var ball = {x:500, y:140, r:20, g:5, vx:-4, vy:0, color: '#005588'} // 小球
 	var f = 0.5; // 摩擦系数
-	renderDigit(100, 100, 8, context);
-	renderColock();
 	setInterval(function() {
-		// render(context);
-		// drop();
-	}, 50);
+		renderColock(context);
+	}, 1000);
 	/*
 	* 小球掉落函数：x坐标为小球当前x坐标加上x方向的速度vx，同理y坐标
 	*             y方向的速度vy因为需要加上重力加速度g，所以vy=vy+g
@@ -47,13 +43,7 @@
 			ball.vy = -ball.vy * f;
 		}
 	}
-	function render(ctx) {
-		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-		ctx.fillStyle = ball.color;
-		ctx.beginPath();
-		ctx.arc(ball.x, ball.y, ball.r, 0, 2 * Math.PI);
-		ctx.fill();
-	}
+	// 获取当前时间
 	function getCurrentTime() {
 		let date = new Date();
 		let hour = date.getHours().toString().length === 1 ? '0' + date.getHours() : date.getHours().toString();;
@@ -62,18 +52,35 @@
 		return [hour, min, sec]
 	}
 	// 画时钟对应的小球
-	function renderDigit( x , y , num , cxt ){
-		cxt.fillStyle = "rgb(0,102,153)";
+	function renderDigit(x , y , num , ctx){
+		ctx.fillStyle = "rgb(0,102,153)";
 		for( var i = 0 ; i < number[num].length ; i ++ )
 			for(var j = 0 ; j < number[num][i].length ; j ++ )
 				if( number[num][i][j] == 1 ){
-					cxt.beginPath();
-					cxt.arc( x+j*2*(RADIUS+1)+(RADIUS+1) , y+i*2*(RADIUS+1)+(RADIUS+1) , RADIUS , 0 , 2*Math.PI )
-					cxt.fill()
+					ctx.beginPath();
+					ctx.arc(x + j * 2 * (RADIUS + 1) + (RADIUS + 1) , y + i * 2 * (RADIUS + 1) + (RADIUS + 1) , RADIUS , 0 , 2 * Math.PI)
+					ctx.fill()
 				}
 			}
-	function renderColock(time) {
-		let [h, m, s] = getCurrentTime()
-		console.log(h)
+	// 根据当前时间画对应的时钟
+	function renderColock(ctx) {
+		let [h, m, s] = getCurrentTime();
+		h = h.length === 2 ? h : '0' + h;
+		m = m.length === 2 ? m : '0' + m;
+		s = s.length === 2 ? s : '0' + s;
+		ctx.clearRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+		renderDigit(MARGIN_LEFT, MARGIN_TOP, h[0], ctx);
+		renderDigit(MARGIN_LEFT + 18 * RADIUS, MARGIN_TOP, h[1], ctx);
+
+		renderDigit(MARGIN_LEFT + 36 * RADIUS , MARGIN_TOP , 10 , ctx);
+
+		renderDigit(MARGIN_LEFT + 50 * RADIUS, MARGIN_TOP, m[0], ctx);
+		renderDigit(MARGIN_LEFT + 68 * RADIUS, MARGIN_TOP, m[1], ctx);
+
+		renderDigit(MARGIN_LEFT + 86 * RADIUS , MARGIN_TOP , 10 , ctx);
+
+		renderDigit(MARGIN_LEFT + 100 * RADIUS, MARGIN_TOP, s[0], ctx);
+		renderDigit(MARGIN_LEFT + 118 * RADIUS, MARGIN_TOP, s[1], ctx);
 	}		
-		})();
+})();
