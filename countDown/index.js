@@ -2,7 +2,7 @@
 * @Author: huangqh
 * @Date:   2019-03-26 22:34:11
 * @Last Modified by:   huangqh
-* @Last Modified time: 2019-03-31 22:05:14
+* @Last Modified time: 2019-04-02 22:16:33
 */
 (function() {
 	var WINDOW_WIDTH = 1024; // 屏幕宽
@@ -10,6 +10,7 @@
 	var RADIUS = 8; // 小球半价
     var MARGIN_TOP = 60;
     var MARGIN_LEFT = 30;
+    var CURENT_DATE = new Date()
 
     var balls = []; // 小球集合
     const colors = ["#33B5E5","#0099CC","#AA66CC","#9933CC","#99CC00","#669900","#FFBB33","#FF8800","#FF4444","#CC0000"]; // 小球颜色集合
@@ -27,7 +28,8 @@
 	var f = 0.5; // 摩擦系数
 	setInterval(function() {
 		renderColock(context);
-	}, 1000);
+		updateBalls();
+	}, 50);
 	/*
 	* 小球掉落函数：x坐标为小球当前x坐标加上x方向的速度vx，同理y坐标
 	*             y方向的速度vy因为需要加上重力加速度g，所以vy=vy+g
@@ -82,5 +84,83 @@
 
 		renderDigit(MARGIN_LEFT + 100 * RADIUS, MARGIN_TOP, s[0], ctx);
 		renderDigit(MARGIN_LEFT + 118 * RADIUS, MARGIN_TOP, s[1], ctx);
+
+		for( var i = 0 ; i < balls.length ; i ++ ){
+        ctx.fillStyle=balls[i].color;
+
+        ctx.beginPath();
+        ctx.arc( balls[i].x , balls[i].y , RADIUS , 0 , 2*Math.PI , true );
+        ctx.closePath();
+
+        ctx.fill();
+    }
+
+	}
+	// 向balls中添加对应发生变化的数字的小球，添加的小球为一个集合，包括对应的x、y坐标、颜色、速度
+	function addBalls( x , y , num ){
+		for( var i = 0  ; i < number[num].length ; i ++ )
+			for( var j = 0  ; j < number[num][i].length ; j ++ )
+				if( number[num][i][j] == 1 ){
+					var aBall = {
+						x:x+j*2*(RADIUS+1)+(RADIUS+1),
+						y:y+i*2*(RADIUS+1)+(RADIUS+1),
+						g:1.5+Math.random(),
+						vx:Math.pow( -1 , Math.ceil( Math.random()*1000 ) ) * 4,
+						vy:-5,
+						color: colors[ Math.floor( Math.random()*colors.length ) ]
+					}
+
+					balls.push( aBall )
+				}
+	}
+	function updateBalls() {
+		let beforeH = CURENT_DATE.getHours()
+		let beforeM = CURENT_DATE.getMinutes()
+		let beforeS = CURENT_DATE.getSeconds()
+		let [h, m, s] = getCurrentTime();
+		if (beforeS !== s) {
+			if( parseInt(s/10) != parseInt(beforeS/10) ){
+				addBalls( MARGIN_LEFT + 100 * RADIUS , MARGIN_TOP , parseInt(s/10) );
+			}
+			if( parseInt(s%10) != parseInt(beforeS%10) ){
+				addBalls( MARGIN_LEFT + 118 * RADIUS , MARGIN_TOP , parseInt(s%10) );
+			}
+		}
+		if (beforeM !== m) {
+			if( parseInt(m/10) != parseInt(beforeM/10) ){
+				addBalls(MARGIN_LEFT + 50 * RADIUS, MARGIN_TOP, parseInt(m/10) );
+			}
+			if( parseInt(m%10) != parseInt(beforeM%10) ){
+				addBalls(MARGIN_LEFT + 68 * RADIUS, MARGIN_TOP , parseInt(m%10) );
+			}
+		}
+		if (beforeH !== h) {
+			if( parseInt(h/10) != parseInt(beforeH/10) ){
+				addBalls(MARGIN_LEFT, MARGIN_TOP, parseInt(h/10) );
+			}
+			if( parseInt(h%10) != parseInt(beforeH%10) ){
+				addBalls(MARGIN_LEFT + 18 * RADIUS, MARGIN_TOP , parseInt(h%10) );
+			}
+		}
+		for( var i = 0 ; i < balls.length ; i ++ ){
+
+			balls[i].x += balls[i].vx;
+			balls[i].y += balls[i].vy;
+			balls[i].vy += balls[i].g;
+
+			if( balls[i].y >= WINDOW_HEIGHT-RADIUS ){
+				balls[i].y = WINDOW_HEIGHT-RADIUS;
+				balls[i].vy = - balls[i].vy*0.75;
+			}
+		}
+		CURENT_DATE = new Date();
+
+		var cnt = 0; // 画面内的小球总数量
+		for( var i = 0 ; i < balls.length ; i ++ )
+        if( balls[i].x + RADIUS > 0 && balls[i].x -RADIUS < WINDOW_WIDTH ) // 判断小球还在画面内，若在，则将该小球放入balls头部
+        	balls[cnt++] = balls[i]
+        while( balls.length > cnt ){ // balls中超过cnt索引的小球为滚出画面的小球，需删除
+        	balls.pop();
+        }
 	}		
 })();
