@@ -2,7 +2,7 @@
 * @Author: huangqh
 * @Date:   2019-04-03 22:47:38
 * @Last Modified by:   huangqh
-* @Last Modified time: 2019-04-09 00:02:35
+* @Last Modified time: 2019-04-12 11:52:50
 */
 (function() {
 	var canvas = document.getElementById('canvas');
@@ -27,6 +27,9 @@
 		let rote = Math.random() * 360;
 		draw(context, r, x, y, rote);
 	}
+	fillMoon(context, 2, 1000, 150, 100, -30);
+	// drawMoon(context,800);
+	circle(context);
 
 	function draw(ctx, R, x, y, rote) {
 		ctx.save();
@@ -55,5 +58,62 @@
 			ctx.lineTo(Math.cos((54 + 72 * i) / 180 * Math.PI)  * 10, - Math.sin((54 + 72 * i) / 180 * Math.PI)  * 10);
 		}
 		ctx.closePath();
+	}
+
+
+	function pathMoon(ctx, d, r) {
+		ctx.beginPath();
+		ctx.arc(0, 0, 1,0.5 * Math.PI,1.5 * Math.PI, true);
+		ctx.moveTo(0, -1);
+		ctx.arcTo(d, 0, 0, 1, dis(0,-1,d,0)/d);
+		ctx.lineWidth = 1/r;
+		ctx.stroke(); // 若使用stroke()绘制，因为scale会放大倍数，导致lineWidth也会被相应放大，使用将lineWidth设置为 1/r；或者不使用sroke，则无需设置lineWidth
+		ctx.closePath();
+	}
+
+	function fillMoon(ctx, d, x, y, r, rot, color) {
+		ctx.save();
+		ctx.translate(x, y);
+		ctx.rotate(rot * Math.PI / 180);
+		ctx.scale(r, r);
+		pathMoon(ctx, d, r);
+		ctx.fillStyle = color || '#fb3';
+		ctx.fill();
+		ctx.restore()
+	}
+
+	// function drawMoon(ctx,d) {
+	// 	ctx.save();
+	// 	ctx.beginPath();
+	// 	ctx.lineWidth = 0.01;
+	// 	ctx.scale(20, 20);
+	// 	ctx.arc(10,10,5,0.5*Math.PI,1.5*Math.PI, true);
+	// 	ctx.moveTo(10,5);
+	// 	ctx.arcTo(20,10,10,15,dis(10,5,20,10)/2);
+	// 	ctx.stroke();
+	// 	ctx.fillStyle = 'green';
+	// 	ctx.fill();
+
+	// 	ctx.restore();
+	// }
+
+	function circle(ctx) {
+		ctx.beginPath();
+		// ctx.strokeStyle = 'red';
+		ctx.lineWidth = 10;
+		ctx.lineCap="round";
+		var grd=ctx.createLinearGradient(400,300,500,400);
+		grd.addColorStop(0,"black");
+		grd.addColorStop(1,"white");
+
+		ctx.strokeStyle=grd;
+		// ctx.fillRect(300,400,100,100);
+		ctx.arc(400,400,100,Math.PI,2*Math.PI);
+		ctx.stroke();
+		ctx.closePath();
+	}
+
+	function dis(x1,y1,x2,y2) {
+		return Math.sqrt((x1-x2) * (x1-x2) + (y1-y2) * (y1-y2));
 	}
 })();
