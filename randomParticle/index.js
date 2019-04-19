@@ -2,19 +2,20 @@
 * @Author: huangqh
 * @Date:   2019-04-18 11:53:09
 * @Last Modified by:   huangqh
-* @Last Modified time: 2019-04-19 13:41:24
+* @Last Modified time: 2019-04-19 15:49:15
 */
 (function() {
 	var canvas = document.getElementById('canvas'),
 	    context = canvas.getContext('2d'),
 	    starArr = [],
-	    starNum = 100,
+	    starNum = 200,
 	    circle = {
 	    	x: 0,
 	    	y: 0,
 	    	color: 'white'
 	    },
-	    circleArr = [];
+	    circleArr = [], // 上升粒子集合
+        meteorArr = []; // 流星集合
 	canvas.width = document.body.clientWidth;
 	canvas.height = document.body.clientHeight;  
 
@@ -40,17 +41,52 @@
             this.y = canvas.height + 10;
         }
         this.draw(ctx);
-        drawCircle(ctx);
 	}
+    /*
+    x,y: 流星的起始点坐标；speed：流星的速度
+    */
+    function meteor(x,y,speed,color) {
+        this.x = x;
+        this.y = y;
+        this.speed = speed;
+        this.color = color || 'white';
+    }
+    meteor.prototype.draw = function(ctx) {
+        var my_gradient=ctx.createLinearGradient(this.x,this.y,this.x + 100,this.y - 100);
+        my_gradient.addColorStop(0,this.color);
+        my_gradient.addColorStop(1,"black");
+        ctx.strokeStyle=my_gradient;
+        ctx.lineWidth = 1;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(this.x,this.y);
+        ctx.lineTo(this.x + 100, this.y - 100);
+        ctx.stroke();
+        ctx.closePath();
+    }
+    meteor.prototype.move = function(ctx) {
+        this.x -= this.speed;
+        this.y += this.speed;
+        if (this.x < -50) {
+            this.y = Math.random() * -100;
+            this.x = Math.random() * canvas.width;
+            this.speed = Math.random() * 10 + 1;
+        }
+        this.draw(ctx)
+    }
 	function animate() {
         context.clearRect(0, 0, canvas.width, canvas.height);
+        mouseMove(context);
 
         for (var i in starArr) {
             starArr[i].move(context);
         }
+        for (var i in meteorArr) {
+             meteorArr[i].move(context);
+        }
         requestAnimationFrame(animate)
     }
-    function drawCircle(ctx) {
+    function mouseMove(ctx) { // 鼠标移动时画圈圈
     	for (var i in circleArr) {
     		ctx.fillStyle = circleArr[i].color;
     		ctx.beginPath();
@@ -63,6 +99,10 @@
         for(var i = 0; i < starNum; i++ ){
             starArr[i] = new star(i,Math.random() * canvas.width,Math.random() * canvas.height);
             starArr[i].draw(context);
+        }
+        for (var i = 0; i < 3; i++) {
+            meteorArr[i] = new meteor(Math.random() * canvas.width, Math.random() * -100, Math.random() * 10 + 1);
+            meteorArr[i].draw(context);
         }
          animate();
     }
