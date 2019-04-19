@@ -2,7 +2,7 @@
 * @Author: huangqh
 * @Date:   2019-04-03 22:47:38
 * @Last Modified by:   huangqh
-* @Last Modified time: 2019-04-16 17:37:43
+* @Last Modified time: 2019-04-17 14:17:48
 */
 (function() {
 	var canvas = document.getElementById('canvas');
@@ -74,6 +74,8 @@
 		ctx.scale(r, r);
 		pathMoon(ctx, d, r);
 		ctx.fillStyle = color || '#fb3';
+		ctx.shadowBlur = 40; // 设置月亮阴影
+        ctx.shadowColor = '#fff';
 		ctx.fill();
 		ctx.restore();
 	}

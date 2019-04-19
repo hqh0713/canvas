@@ -3,7 +3,36 @@
 <head>
 	<title>画多边形</title>
 </head>
+<style type="text/css">
+	.filter {
+            width: 1200px;
+            height: 600px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #536976;
+            animation: colorChange 30s ease-in-out infinite;
+            animation-fill-mode: both;
+            mix-blend-mode: overlay;
+            z-index: 10;
+        }
+
+        @keyframes colorChange {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: .9;
+            }
+        }
+        #canvas{
+        	position: absolute;
+        	top: 0px;
+        	left: 0px;
+        }
+</style>
 <body>
+	<div class="filter"></div>
 	<canvas id="canvas"></canvas>
 </body>
 <script type="text/javascript" src="index.js"></script>
