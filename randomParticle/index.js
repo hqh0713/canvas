@@ -1,8 +1,8 @@
 /*
 * @Author: huangqh
 * @Date:   2019-04-18 11:53:09
-* @Last Modified by:   huangqh
-* @Last Modified time: 2019-04-19 15:49:15
+* @Last Modified by:   huangqinghai
+* @Last Modified time: 2019-04-22 11:03:04
 */
 (function() {
 	var canvas = document.getElementById('canvas'),
@@ -65,8 +65,10 @@
         ctx.closePath();
     }
     meteor.prototype.move = function(ctx) {
+        // 改变流星x，y大小，达到流星下落的效果
         this.x -= this.speed;
         this.y += this.speed;
+        // 当流星不在画布可视区域时，重新设置流星的位置和速度
         if (this.x < -50) {
             this.y = Math.random() * -100;
             this.x = Math.random() * canvas.width;
