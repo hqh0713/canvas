@@ -1,8 +1,8 @@
 /*
 * @Author: huangqh
 * @Date:   2019-04-03 22:47:38
-* @Last Modified by:   huangqh
-* @Last Modified time: 2019-04-17 14:17:48
+* @Last Modified by:   hqh
+* @Last Modified time: 2019-05-08 23:23:17
 */
 (function() {
 	var canvas = document.getElementById('canvas');
@@ -110,39 +110,57 @@
 		ctx.fill();
 		ctx.restore();
 	}
+	function people(x,y, color) {
+		this.x = x;
+		this.y = y;
+		this.color = color;
+	}
+	people.prototype.draw = function(ctx) {
+		ctx.save();
+		ctx.fillStyle = this.color;
+		ctx.beginPath();
+        ctx.arc(this.x,this.y,15,0,Math.PI*2,true);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+	}
+	people.prototype.walk = function(ctx) {
+		this.x += 50;
+		if (this.x > canvas.width) {
+			this.x = 100
+		}
+		this.draw(ctx);
+	}
+	var pp = new people(0,550, 'white');
 
-	// function drawMoon(ctx,d) {
-	// 	ctx.save();
-	// 	ctx.beginPath();
-	// 	ctx.lineWidth = 0.01;
-	// 	ctx.scale(20, 20);
-	// 	ctx.arc(10,10,5,0.5*Math.PI,1.5*Math.PI, true);
-	// 	ctx.moveTo(10,5);
-	// 	ctx.arcTo(20,10,10,15,dis(10,5,20,10)/2);
-	// 	ctx.stroke();
-	// 	ctx.fillStyle = 'green';
-	// 	ctx.fill();
-
-	// 	ctx.restore();
-	// }
-
-	// function circle(ctx) {
-	// 	ctx.beginPath();
-	// 	// ctx.strokeStyle = 'red';
-	// 	ctx.lineWidth = 10;
-	// 	ctx.lineCap="round";
-	// 	var grd=ctx.createLinearGradient(400,300,500,400);
-	// 	grd.addColorStop(0,"black");
-	// 	grd.addColorStop(1,"white");
-
-	// 	ctx.strokeStyle=grd;
-	// 	// ctx.fillRect(300,400,100,100);
-	// 	ctx.arc(400,400,100,Math.PI,2*Math.PI);
-	// 	ctx.stroke();
-	// 	ctx.closePath();
-	// }
-
+   /*
+    返回两点间距离
+   */
 	function dis(x1,y1,x2,y2) {
 		return Math.sqrt((x1-x2) * (x1-x2) + (y1-y2) * (y1-y2));
 	}
+	function render() {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		let sky = context.createRadialGradient(canvas.width / 2,canvas.height,0, canvas.width / 2,canvas.height, canvas.height * 1.2);
+	    sky.addColorStop(0,'#035');
+	    sky.addColorStop(1,'black');
+	    context.fillStyle = sky;
+	    context.fillRect(0, 0, canvas.width, canvas.height);
+		for (let i = 0; i <= 40; i++) {
+			let r = Math.random() * 10 +5;
+		    let x = Math.random() * canvas.width;
+		    let y = Math.random() * canvas.height * 0.4;
+		    let rote = Math.random() * 360;
+		    draw(context, r, x, y, rote);
+	    }
+	    fillMoon(context, 2, 1000, 150, 100, -30);
+	    drawLand(context, 0, canvas.height - 100,canvas.width,canvas.height - 100, ['#030', '#580']);
+	    pp.walk(context);
+	}
+	function init() {
+		setInterval(()=> {
+			render();
+		}, 1000)
+	}
+	init();
 })();
