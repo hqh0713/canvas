@@ -2,14 +2,21 @@
 * @Author: huangqh
 * @Date:   2019-04-03 22:47:38
 * @Last Modified by:   hqh
-* @Last Modified time: 2019-05-08 23:23:17
+* @Last Modified time: 2019-05-12 00:19:02
 */
 (function() {
 	var canvas = document.getElementById('canvas');
 	var context = canvas.getContext('2d');
+	var runStar = new Image();
+    runStar.src = './run-1.png';
+    var runEnd = new Image();
+    runEnd.src = './run-2.png';
+    var runArr = [runStar, runEnd];
+    var runIndex = 0;
 
-	canvas.width = 1200;
-	canvas.height = 600;
+
+	canvas.width = document.documentElement.clientWidth;
+	canvas.height = document.documentElement.clientHeight;
 
 	// let sky = context.createLinearGradient(0,0,0,canvas.height);
 	// sky.addColorStop(0,'black');
@@ -50,8 +57,8 @@
 	function drawStar(ctx) {
 		ctx.beginPath();
 		for(let i = 0; i < 5; i++) {
-			ctx.lineTo(Math.cos((18 + 72 * i) / 180 * Math.PI)  * 20, - Math.sin((18 + 72 * i) / 180 * Math.PI)  * 20);
-			ctx.lineTo(Math.cos((54 + 72 * i) / 180 * Math.PI)  * 10, - Math.sin((54 + 72 * i) / 180 * Math.PI)  * 10);
+			ctx.lineTo(Math.cos((18 + 72 * i) / 180 * Math.PI)  * 10, - Math.sin((18 + 72 * i) / 180 * Math.PI)  * 10);
+			ctx.lineTo(Math.cos((54 + 72 * i) / 180 * Math.PI)  * 5, - Math.sin((54 + 72 * i) / 180 * Math.PI)  * 5);
 		}
 		ctx.closePath();
 	}
@@ -119,9 +126,8 @@
 		ctx.save();
 		ctx.fillStyle = this.color;
 		ctx.beginPath();
-        ctx.arc(this.x,this.y,15,0,Math.PI*2,true);
+        ctx.drawImage(runArr[runIndex],this.x,this.y)
         ctx.closePath();
-        ctx.fill();
         ctx.restore();
 	}
 	people.prototype.walk = function(ctx) {
@@ -131,7 +137,7 @@
 		}
 		this.draw(ctx);
 	}
-	var pp = new people(0,550, 'white');
+	var person = new people(0,canvas.height / 1.2, 'white');
 
    /*
     返回两点间距离
@@ -146,21 +152,24 @@
 	    sky.addColorStop(1,'black');
 	    context.fillStyle = sky;
 	    context.fillRect(0, 0, canvas.width, canvas.height);
-		for (let i = 0; i <= 40; i++) {
+		for (let i = 0; i <= 10; i++) {
 			let r = Math.random() * 10 +5;
 		    let x = Math.random() * canvas.width;
 		    let y = Math.random() * canvas.height * 0.4;
 		    let rote = Math.random() * 360;
+		    if (Math.random() > 0.5) continue;
 		    draw(context, r, x, y, rote);
 	    }
 	    fillMoon(context, 2, 1000, 150, 100, -30);
 	    drawLand(context, 0, canvas.height - 100,canvas.width,canvas.height - 100, ['#030', '#580']);
-	    pp.walk(context);
+	    runIndex ++;
+	    (runIndex > 1) ? runIndex = 0 : runIndex
+	    person.walk(context);
 	}
 	function init() {
 		setInterval(()=> {
 			render();
-		}, 1000)
+		},300)
 	}
 	init();
 })();
